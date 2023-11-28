@@ -10,17 +10,22 @@ public class MerkleTree {
     private MerkleNode root;
 
     public MerkleTree(List<String> data) {
-        List<MerkleNode> nodes = data.stream().map(MerkleNode::new).collect(Collectors.toList());
-        while (nodes.size() > 1) {
-            List<MerkleNode> internalNodes = new ArrayList<>();
-            for (int i = 0; i < nodes.size(); i += 2) {
-                MerkleNode left = nodes.get(i);
-                MerkleNode right = (i + 1 < nodes.size()) ? nodes.get(i + 1) : null;
-                internalNodes.add(new MerkleNode(left, right));
+        if (data.isEmpty()) {
+            // Handle the empty case, perhaps set the root to null or a default value
+            this.root = null;
+        } else {
+            List<MerkleNode> nodes = data.stream().map(MerkleNode::new).collect(Collectors.toList());
+            while (nodes.size() > 1) {
+                List<MerkleNode> internalNodes = new ArrayList<>();
+                for (int i = 0; i < nodes.size(); i += 2) {
+                    MerkleNode left = nodes.get(i);
+                    MerkleNode right = (i + 1 < nodes.size()) ? nodes.get(i + 1) : null;
+                    internalNodes.add(new MerkleNode(left, right));
+                }
+                nodes = internalNodes;
             }
-            nodes = internalNodes;
+            this.root = nodes.get(0);
         }
-        this.root = nodes.get(0);
     }
 
     // Getter for root
